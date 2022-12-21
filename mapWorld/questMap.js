@@ -48,7 +48,6 @@ function buildWorld(){
         canvas = document.getElementById("renderCanvas"); // Canvas element required for navigation
         engine = new BABYLON.Engine(canvas, true);
         return 
-
     }
     
     function createScene() {
@@ -270,6 +269,9 @@ function buildWorld(){
     //     return worldMatrix;
     // }
     console.log('map')
+    console.log('userFacingDirection', userFacingDirection)
+    console.log('userLocation', userLocation)
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiYnNpZGVzNDQiLCJhIjoiY2xiYWR1Z29hMDdmbjN4bG1idndnajY1MyJ9.-s33q85oreynlcmXeqilOQ';
 
     var map = new mapboxgl.Map({
@@ -278,10 +280,10 @@ function buildWorld(){
         style: 'mapbox://styles/bsides44/clb9wiw5h000w14nx4dmxci2i', //from MapBox Style Editor
         center: userLocation, // [lng, lat] , 
         zoom: 19, 
-        optimizeForTerrain: true,
+        // optimizeForTerrain: true,
         pitch: 85, //0-85
         scrollZoom: true,
-        antialias: true,
+        // antialias: true,
     })
 
     // async function getElevation(){
@@ -295,18 +297,23 @@ function buildWorld(){
 
         
     // /** 3D OBJECT LAYER **/
-
+    console.log('cutsom layer')
     var customLayer = {
         id: '3d-model',
         type: 'custom',
         renderingMode: '3d',
         onAdd: function(map) {
+            console.log('on add')
             this.map = map;
             this.engine = createEngine();
             this.scene = createScene(this.engine)
         },
         render(gl, matrix) {
+    console.log('render')
+
             if (this.scene) {
+    console.log('if scene')
+
                 // renderBabylon(engine, matrix)
                 scene.render()
             }
