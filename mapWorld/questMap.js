@@ -38,13 +38,15 @@ function getLocation(){
  const gpsSuccess = (position) => {
     userLocation = [position.coords.longitude, position.coords.latitude] 
     userFacingDirection = position.coords.heading ? position.coords.heading : -90
+    buildWorld()
  }
- 
+
  const gpsError = (error) => {
     console.log('gps error', error.message)
     alert('Please turn on Location Services')
     debug('GPS error: ');
     debug(error.message);
+    buildWorld()
   };
 
   /** MOTION */
@@ -59,7 +61,7 @@ function getLocation(){
         .then(response => {
             console.log('DeviceOrientationEvent permission', response)
             if (response == 'granted') {
-                buildWorld()
+                console.log('moved buildworld')
                 window.addEventListener('deviceorientation', (e) => {
                     // 1. try device orientation camera
                     // scene.activeCamera.detachControl(canvas);
@@ -74,12 +76,11 @@ function getLocation(){
                     //3. try add vr device orientation controls
                     
                 })
-            } else { buildWorld()}
+            }
         })
         .catch(console.error)
     } else {
         console.log('not ios')
-        buildWorld()
         window.addEventListener('deviceorientation', (e) => {
         })
     }
