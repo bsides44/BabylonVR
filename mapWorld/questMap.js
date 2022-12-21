@@ -160,19 +160,28 @@ function buildWorld(){
             //     // const xrCamera = new BABYLON.WebXRCamera("xrCamera", scene, sessionManager);
 
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
-            if (confirm('Device orientation required'))
-            {
-                console.log('adding xr camera')
-                scene.activeCamera.detachControl(canvas);
-                const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-                scene.activeCamera = deviceCamera;
-                deviceCamera.attachControl(canvas, false);
-                debug('XR camera')
-            }
-            else
-            {
-                console.log('device orientation not allowed')
-            }
+
+        //Check this event exists (ios only)
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+            .then(response => {
+                if (response == 'granted') {
+                    window.addEventListener('deviceorientation', (e) => {
+                        // do something with e
+                        console.log('adding xr camera')
+                        scene.activeCamera.detachControl(canvas);
+                        const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                        scene.activeCamera = deviceCamera;
+                        deviceCamera.attachControl(canvas, false);
+                        debug('XR camera')
+                    })
+                }
+                else {
+                    console.log('device orientation not allowed')
+                }
+            })
+            .catch(console.error)
+        }
     
 
             // }
