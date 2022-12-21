@@ -35,6 +35,22 @@
       position: absolute; 
       top: 0
     }
+    #motionButton{
+      z-index: 0;
+      height: 100px;
+      width: 200px;
+      position: absolute;
+      top: 10px;
+      left: 48%;
+      margin-top: 20px;
+      display: none;
+      cursor: pointer;
+      font-family: "roboto", "calibri", sans-serif;
+      font-size: 1em
+    }
+    #motionButton:hover{
+      background-color: lightslategray;
+    }
     .xr-button-overlay{
       display: none;
     }
@@ -44,7 +60,7 @@
     <div id='map'></div>
 
     <canvas id="renderCanvas" touch-action="none"></canvas>
-
+    <button id="motionButton">Activate Device Motion</button>
     <!-- <script src="./boxMapVRIntegration.js"></script> -->
     <div id="printDebug"></div>
     <script src="./questMap.js"></script>
