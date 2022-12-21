@@ -22,6 +22,8 @@ let userFacingDirection = 135
 let camera
 let engine
 let canvas
+let beta = 0
+let gamma = 0
 
  /** GPS **/
 
@@ -162,10 +164,6 @@ function buildWorld(){
 
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
 
-            // only required for ios 13+
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                motionButton.style.display = "block"
-            }
         /**  AR */
         // const arAvailable = await BABYLON.WebXRSessionManager.IsSessionSupportedAsync('immersive-ar');
 
@@ -234,6 +232,19 @@ function buildWorld(){
         // window.addEventListener('resize', function () {
         //     engine.resize();
         // });
+        
+        // only required for ios 13+
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            motionButton.style.display = "block"
+        }
+        
+        if (gamma) {
+            console.log('registering gamma', gamma)
+            scene.registerBeforeRender(() => {
+                camera.alpha = BABYLON.Tools.ToRadians(gamma);
+                camera.beta = BABYLON.Tools.ToRadians(beta);
+            });
+        }
 
         return scene;	
     }
@@ -249,23 +260,20 @@ function buildWorld(){
                 console.log('DeviceOrientationEvent permission', response)
                 if (response == 'granted') {
                     window.addEventListener('deviceorientation', (e) => {
-                        // do something with e
+                        // 1. try device orientation camera
                         // scene.activeCamera.detachControl(canvas);
                         // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
                         // scene.activeCamera = deviceCamera;
                         // deviceCamera.attachControl(canvas, false);
+                        
+                        //2. try bind camera to beta and game values with registerbeforerender
+                        beta = e.beta
+                        gamma = e.gamma
 
-                        let beta = e.beta
-                        let gamma = e.gamma
-                        userFacingDirection = e.webkitCompassHeading
-                        console.log('userFacingDirection', userFacingDirection)
-                        console.log('beta', beta)
+                        //3. try add vr device orientation controls
+                        // camera.attachControl(canvas, true);
+                        // camera.inputs.addVRDeviceOrientation();
 
-
-                        scene.registerBeforeRender(() => {
-                            camera.alpha = BABYLON.Tools.ToRadians(gamma);
-                            camera.beta = BABYLON.Tools.ToRadians(beta);
-                        });
 // e:
 // alpha: 2.200926027684485
 // beta: 46.26685110968732
@@ -291,10 +299,10 @@ function buildWorld(){
             .catch(console.error)
         } else {
             console.log('not ios')
-            scene.activeCamera.detachControl(canvas);
-            const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-            scene.activeCamera = deviceCamera;
-            deviceCamera.attachControl(canvas, false);
+            window.addEventListener('deviceorientation', (e) => {
+                beta = e.beta
+                gamma = e.gamma
+            })
         }
     }
     
