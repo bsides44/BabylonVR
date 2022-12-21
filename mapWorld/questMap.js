@@ -16,6 +16,8 @@
 // add multiplayer
 const locationButton = document.getElementById( "locationButton" );
 locationButton.addEventListener( "click", getLocation );
+const motionButton = document.getElementById( "motionButton" );
+motionButton.addEventListener( "click", getMotion );
 
 let userLocation = [174.85546448262812, -41.07448707375911] 
 let userFacingDirection = 135
@@ -25,26 +27,64 @@ let canvas
 // let beta = 0
 // let gamma = 0
 
- /** GPS **/
+/** CALL GPS */
+function getLocation(){
+    locationButton.style.display = "none"
+    navigator.geolocation.getCurrentPosition(gpsSuccess, gpsError);
+
+    motionButton.style.display = "block"
+}
 
  const gpsSuccess = (position) => {
     userLocation = [position.coords.longitude, position.coords.latitude] 
     userFacingDirection = position.coords.heading ? position.coords.heading : -90
-    buildWorld()
  }
  const gpsError = (error) => {
     console.log('gps error', error.message)
     alert('Please turn on Location Services')
     debug('GPS error: ');
     debug(error.message);
-
-    buildWorld()
   };
 
-function buildWorld(){
-    const motionButton = document.getElementById( "motionButton" );
-    motionButton.addEventListener( "click", getMotion );
+  /** MOTION */
 
+  function getMotion(){
+    console.log('getting orientaiton')
+    motionButton.style.display = "none"
+    // ios 13+
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        console.log('ios 13+')
+        DeviceOrientationEvent.requestPermission()
+        .then(response => {
+            console.log('DeviceOrientationEvent permission', response)
+            if (response == 'granted') {
+                window.addEventListener('deviceorientation', (e) => {
+                    // 1. try device orientation camera
+                    // scene.activeCamera.detachControl(canvas);
+                    // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                    // scene.activeCamera = deviceCamera;
+                    // deviceCamera.attachControl(canvas, false);
+                    
+                    //2. try bind camera to beta and game values with registerbeforerender
+                    // beta = e.beta
+                    // gamma = e.gamma
+
+                    //3. try add vr device orientation controls
+                    buildWorld()
+                })
+            }
+        })
+        .catch(console.error)
+    } else {
+        console.log('not ios')
+        // window.addEventListener('deviceorientation', (e) => {
+            buildWorld()
+        // })
+    }
+}
+
+function buildWorld(){
+    console.log('build world')
     /** BABYLON SETUP **/
     let scene
     
@@ -57,12 +97,12 @@ function buildWorld(){
     function createScene() {
         scene = new BABYLON.Scene(engine);
         scene.activeCamera = new BABYLON.ArcRotateCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
-        scene.autoClear = false;
-        scene.detachControl();
+        // scene.autoClear = false;
+        // scene.detachControl();
 
         camera = scene.activeCamera;
         camera.attachControl(canvas, true);
-        camera.inputs.addVRDeviceOrientation();
+        camera.inputs.add(new BABYLON.ArcRotateCameraVRDeviceOrientationInput());
         const light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(1, 1, 0), scene)
     
         const ground = BABYLON.Mesh.CreateGround('', 10, 10, 3, scene)
@@ -235,10 +275,6 @@ function buildWorld(){
         //     engine.resize();
         // });
         
-        // only required for ios 13+
-        // if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-            motionButton.style.display = "block"
-        // }
         
         // if (gamma) {
         //     console.log('registering gamma', gamma)
@@ -249,62 +285,6 @@ function buildWorld(){
         // }
 
         return scene;	
-    }
-
-    function getMotion(){
-        console.log('getting orientaiton')
-        motionButton.style.display = "none"
-        // ios 13+
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-            console.log('ios 13+')
-            DeviceOrientationEvent.requestPermission()
-            .then(response => {
-                console.log('DeviceOrientationEvent permission', response)
-                if (response == 'granted') {
-                    window.addEventListener('deviceorientation', (e) => {
-                        // 1. try device orientation camera
-                        // scene.activeCamera.detachControl(canvas);
-                        // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-                        // scene.activeCamera = deviceCamera;
-                        // deviceCamera.attachControl(canvas, false);
-                        
-                        //2. try bind camera to beta and game values with registerbeforerender
-                        // beta = e.beta
-                        // gamma = e.gamma
-
-                        //3. try add vr device orientation controls
-
-
-// e:
-// alpha: 2.200926027684485
-// beta: 46.26685110968732
-// bubbles: false
-// cancelBubble: false
-// cancelable: false
-// composed: false
-// currentTarget: null
-// defaultPrevented: false
-// eventPhase: 0
-// gamma: -4.974145704932919
-// isTrusted: true
-// returnValue: true
-// srcElement: Window {listeners: Object, buildWorld: function, Infinity: Infinity, document: #document, debug: function, …}
-// target: Window {listeners: Object, buildWorld: function, Infinity: Infinity, document: #document, debug: function, …}
-// timeStamp: 12847
-// type: "deviceorientation"
-// webkitCompassAccuracy: 12.370033264160156
-// webkitCompassHeading: 256.5682373046875
-                    })
-                }
-            })
-            .catch(console.error)
-        } else {
-            console.log('not ios')
-            window.addEventListener('deviceorientation', (e) => {
-                camera.attachControl(canvas, true);
-                camera.inputs.addVRDeviceOrientation();
-            })
-        }
     }
     
     // function renderBabylon(engine, matrix) {
@@ -385,12 +365,6 @@ function buildWorld(){
     // getElevation()
 
 };
-
-/** CALL GPS */
-function getLocation(){
-    locationButton.style.display = "none"
-    navigator.geolocation.getCurrentPosition(gpsSuccess, gpsError);
-}
 
 
 /** DEBUG QUEST BROWSESR */
