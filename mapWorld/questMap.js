@@ -14,7 +14,7 @@
 // add trees and bird sounds
 // add entrance screen
 // add multiplayer
-
+console.log('loading')
 let userLocation = [174.85546448262812, -41.07448707375911] 
 let userFacingDirection = 135
 let camera
@@ -24,6 +24,7 @@ let canvas
  /** GPS **/
 
  const gpsSuccess = (position) => {
+    console.log('gps success')
     userLocation = [position.coords.longitude, position.coords.latitude] 
     userFacingDirection = position.coords.heading ? position.coords.heading : -90
     buildWorld()
@@ -38,10 +39,12 @@ let canvas
   };
 
 function buildWorld(){
+    console.log('build world')
     /** BABYLON SETUP **/
     let scene
     
     function createEngine() {
+        console.log('create engine')
         canvas = document.getElementById("renderCanvas"); // Canvas element required for navigation
         engine = new BABYLON.Engine(canvas, true);
         return 
@@ -49,6 +52,7 @@ function buildWorld(){
     }
     
     function createScene() {
+        console.log('create scene')
         scene = new BABYLON.Scene(engine);
         scene.activeCamera = new BABYLON.Camera("mapbox-Camera", new BABYLON.Vector3(), scene);
         scene.autoClear = false;
@@ -148,22 +152,22 @@ function buildWorld(){
             // if (wait === 20) {
             //     alert("This browser does not support XR")
             // } if (waitForXRExperience()) {
-                runVR()
+                // runVR()
             // }
 
-            function runVR(){
-                debug('VR is running')
-                // const sessionManager = new BABYLON.WebXRSessionManager(scene);
-                // const xrCamera = new BABYLON.WebXRCamera("xrCamera", scene, sessionManager);
+            // function runVR(){
+            //     debug('VR is running')
+            //     // const sessionManager = new BABYLON.WebXRSessionManager(scene);
+            //     // const xrCamera = new BABYLON.WebXRCamera("xrCamera", scene, sessionManager);
 
-                // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
+            //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
 
-                scene.activeCamera.detachControl(canvas);
-                const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-                scene.activeCamera = deviceCamera;
-                deviceCamera.attachControl(canvas, false);
-                debug('XR camera')
-            }
+            //     scene.activeCamera.detachControl(canvas);
+            //     const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+            //     scene.activeCamera = deviceCamera;
+            //     deviceCamera.attachControl(canvas, false);
+            //     debug('XR camera')
+            // }
             
         // }
 
@@ -232,40 +236,40 @@ function buildWorld(){
 
         // Handle browser resize.
         
-        window.addEventListener('resize', function () {
-            engine.resize();
-        });
+        // window.addEventListener('resize', function () {
+        //     engine.resize();
+        // });
 
         return scene;	
     }
     
-    function renderBabylon(engine, matrix) {
-        if(scene) {
-            var projection = BABYLON.Matrix.FromArray(matrix);
-            projection._m = matrix; 
-            engine.wipeCaches(false);
-                scene.activeCamera.freezeProjectionMatrix(getWorldMatrix().multiply(projection));
-                let invert = scene.activeCamera.getProjectionMatrix().clone().invert();
-                scene.activeCamera.position = BABYLON.Vector3.TransformCoordinates(new BABYLON.Vector3(), invert)
-            scene.render(false);
-        }
-    }
+    // function renderBabylon(engine, matrix) {
+    //     if(scene) {
+    //         var projection = BABYLON.Matrix.FromArray(matrix);
+    //         projection._m = matrix; 
+    //         engine.wipeCaches(false);
+    //             scene.activeCamera.freezeProjectionMatrix(getWorldMatrix().multiply(projection));
+    //             let invert = scene.activeCamera.getProjectionMatrix().clone().invert();
+    //             scene.activeCamera.position = BABYLON.Vector3.TransformCoordinates(new BABYLON.Vector3(), invert)
+    //         scene.render(false);
+    //     }
+    // }
 
     /** MAPBOX SETUP **/
 
-    function getWorldMatrix() {
-        var modelOrigin = userLocation;
-        var modelAltitude = 0;
+    // function getWorldMatrix() {
+    //     var modelOrigin = userLocation;
+    //     var modelAltitude = 0;
 
-        var mercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(modelOrigin, modelAltitude);
-        var rotationMatrix = BABYLON.Matrix.RotationX(Math.PI / 2);
-        var translateMatrix = BABYLON.Matrix.Identity().setTranslationFromFloats(mercatorCoordinate.x, mercatorCoordinate.y, mercatorCoordinate.z);
-        var scaleFactor = mercatorCoordinate.meterInMercatorCoordinateUnits();
-        var scaleMatrix = BABYLON.Matrix.Scaling(scaleFactor, scaleFactor, scaleFactor);
-        var worldMatrix = scaleMatrix.multiply(rotationMatrix.multiply(translateMatrix));
-        return worldMatrix;
-    }
-
+    //     var mercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(modelOrigin, modelAltitude);
+    //     var rotationMatrix = BABYLON.Matrix.RotationX(Math.PI / 2);
+    //     var translateMatrix = BABYLON.Matrix.Identity().setTranslationFromFloats(mercatorCoordinate.x, mercatorCoordinate.y, mercatorCoordinate.z);
+    //     var scaleFactor = mercatorCoordinate.meterInMercatorCoordinateUnits();
+    //     var scaleMatrix = BABYLON.Matrix.Scaling(scaleFactor, scaleFactor, scaleFactor);
+    //     var worldMatrix = scaleMatrix.multiply(rotationMatrix.multiply(translateMatrix));
+    //     return worldMatrix;
+    // }
+    console.log('map')
     mapboxgl.accessToken = 'pk.eyJ1IjoiYnNpZGVzNDQiLCJhIjoiY2xiYWR1Z29hMDdmbjN4bG1idndnajY1MyJ9.-s33q85oreynlcmXeqilOQ';
 
     var map = new mapboxgl.Map({
@@ -274,22 +278,20 @@ function buildWorld(){
         style: 'mapbox://styles/bsides44/clb9wiw5h000w14nx4dmxci2i', //from MapBox Style Editor
         center: userLocation, // [lng, lat] , 
         zoom: 19, 
-        // minZoom: 20,
-        // maxZoom: 22,
         optimizeForTerrain: true,
         pitch: 85, //0-85
         scrollZoom: true,
         antialias: true,
     })
 
-    async function getElevation(){
-        await map.once('idle');
+    // async function getElevation(){
+    //     await map.once('idle');
 
-        const elevation = Math.floor(
-            map.queryTerrainElevation(userLocation, { exaggerated: false })
-        );
-        console.log(' current elevation is ', elevation)
-    }
+    //     const elevation = Math.floor(
+    //         map.queryTerrainElevation(userLocation, { exaggerated: false })
+    //     );
+    //     console.log(' current elevation is ', elevation)
+    // }
 
         
     // /** 3D OBJECT LAYER **/
@@ -313,6 +315,7 @@ function buildWorld(){
     }
 
     map.on('style.load', () => {
+        console.log('map add layer')
         map.addLayer(customLayer, 'waterway-label');
     });
 
@@ -333,7 +336,8 @@ else
 
 /** DEBUG QUEST BROWSESR */
 function debug(words){
-    var paragraph = document.getElementById('textInfo')
+    console.log('debug')
+    var paragraph = document.getElementById('printDebug')
     var text = document.createTextNode(words);
     paragraph.appendChild(text)
 }

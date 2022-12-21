@@ -31,6 +31,10 @@
       bottom: 0; 
       width: 100%;
     }
+    #printDebug {
+      position: absolute; 
+      top: 0
+    }
     .xr-button-overlay{
       display: none;
     }
@@ -42,8 +46,8 @@
     <canvas id="renderCanvas" touch-action="none"></canvas>
 
     <!-- <script src="./boxMapVRIntegration.js"></script> -->
-    <div id="textInfo" style='position: absolute; top: 0'></div>
-    <script src="./questMap.js" type="module"></script>
+    <div id="printDebug"></div>
+    <script src="./questMap.js"></script>
 
   </body>
 </html>
