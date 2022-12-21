@@ -22,8 +22,8 @@ let userFacingDirection = 135
 let camera
 let engine
 let canvas
-let beta = 0
-let gamma = 0
+// let beta = 0
+// let gamma = 0
 
  /** GPS **/
 
@@ -234,17 +234,17 @@ function buildWorld(){
         // });
         
         // only required for ios 13+
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // if (typeof DeviceOrientationEvent.requestPermission === 'function') {
             motionButton.style.display = "block"
-        }
+        // }
         
-        if (gamma) {
-            console.log('registering gamma', gamma)
-            scene.registerBeforeRender(() => {
-                camera.alpha = BABYLON.Tools.ToRadians(gamma);
-                camera.beta = BABYLON.Tools.ToRadians(beta);
-            });
-        }
+        // if (gamma) {
+        //     console.log('registering gamma', gamma)
+        //     scene.registerBeforeRender(() => {
+        //         camera.alpha = BABYLON.Tools.ToRadians(gamma);
+        //         camera.beta = BABYLON.Tools.ToRadians(beta);
+        //     });
+        // }
 
         return scene;	
     }
@@ -267,12 +267,12 @@ function buildWorld(){
                         // deviceCamera.attachControl(canvas, false);
                         
                         //2. try bind camera to beta and game values with registerbeforerender
-                        beta = e.beta
-                        gamma = e.gamma
+                        // beta = e.beta
+                        // gamma = e.gamma
 
                         //3. try add vr device orientation controls
-                        // camera.attachControl(canvas, true);
-                        // camera.inputs.addVRDeviceOrientation();
+                        camera.attachControl(canvas, true);
+                        camera.inputs.addVRDeviceOrientation();
 
 // e:
 // alpha: 2.200926027684485
@@ -300,8 +300,8 @@ function buildWorld(){
         } else {
             console.log('not ios')
             window.addEventListener('deviceorientation', (e) => {
-                beta = e.beta
-                gamma = e.gamma
+                camera.attachControl(canvas, true);
+                camera.inputs.addVRDeviceOrientation();
             })
         }
     }
@@ -333,8 +333,6 @@ function buildWorld(){
     //     var worldMatrix = scaleMatrix.multiply(rotationMatrix.multiply(translateMatrix));
     //     return worldMatrix;
     // }
-    console.log('userFacingDirection', userFacingDirection)
-    console.log('userLocation', userLocation)
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiYnNpZGVzNDQiLCJhIjoiY2xiYWR1Z29hMDdmbjN4bG1idndnajY1MyJ9.-s33q85oreynlcmXeqilOQ';
 
