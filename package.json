@@ -1,0 +1,20 @@
+{
+  "name": "babylonvr",
+  "version": "1.0.0",
+  "description": "Working with Babylon JS and Mapbox",
+  "main": "/mapWorld/boxMapVR.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cp ./mapWorld/boxMapVR.html ./build/index.html && cp ./mapWorld/questMap.js ./build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bsides44/BabylonVR.git"
+  },
+  "author": "bsides44",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bsides44/BabylonVR/issues"
+  },
+  "homepage": "https://github.com/bsides44/BabylonVR#readme"
+}
