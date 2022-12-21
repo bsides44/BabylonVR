@@ -322,7 +322,7 @@ function buildWorld(){
 
     map.on('style.load', () => {
         console.log('map add layer')
-        map.addLayer(customLayer, 'waterway-label');
+        map.addLayer(customLayer);
     });
 
     // getElevation()
