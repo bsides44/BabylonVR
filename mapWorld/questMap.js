@@ -100,12 +100,13 @@ function buildWorld(){
     function createScene() {
         scene = new BABYLON.Scene(engine);
         scene.activeCamera = new BABYLON.ArcRotateCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
-        // scene.autoClear = false;
-        // scene.detachControl();
+        scene.autoClear = false;
+        scene.detachControl();
 
         camera = scene.activeCamera;
         camera.attachControl(canvas, true);
-        camera.inputs.add(new BABYLON.ArcRotateCameraVRDeviceOrientationInput());
+        // camera.inputs.add(new BABYLON.ArcRotateCameraVRDeviceOrientationInput());
+        camera.inputs.addVRDeviceOrientation()
         const light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(1, 1, 0), scene)
     
         const ground = BABYLON.Mesh.CreateGround('', 10, 10, 3, scene)
