@@ -168,7 +168,7 @@ function buildWorld(){
                 if (response == 'granted') {
                     window.addEventListener('deviceorientation', (e) => {
                         // do something with e
-                        console.log('adding xr camera')
+                        console.log('adding xr camera', e)
                         scene.activeCamera.detachControl(canvas);
                         const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
                         scene.activeCamera = deviceCamera;
@@ -176,11 +176,14 @@ function buildWorld(){
                         debug('XR camera')
                     })
                 }
-                else {
-                    console.log('device orientation not allowed')
-                }
             })
             .catch(console.error)
+        } else {
+            console.log('not ios')
+            scene.activeCamera.detachControl(canvas);
+            const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+            scene.activeCamera = deviceCamera;
+            deviceCamera.attachControl(canvas, false);
         }
     
 
