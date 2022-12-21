@@ -237,16 +237,16 @@ function buildWorld(){
         return scene;	
     }
 
-    function getOrientation(){
+    async function getOrientation(){
         console.log('getting orientaiton')
-        if (confirm('Device location required')) {
+        if (confirm('Phone orientation required')) {
             // ios 13+
             if (typeof DeviceOrientationEvent.requestPermission === 'function') {
                 console.log('ios 13+')
-                DeviceOrientationEvent.requestPermission()
-                .then(response => {
-                    console.log('DeviceOrientationEvent permission', response)
-                    if (response == 'granted') {
+                const permissionState = await DeviceOrientationEvent.requestPermission()
+                // .then(response => {
+                    console.log('DeviceOrientationEvent permission', permissionState)
+                    if (permissionState == 'granted') {
                         window.addEventListener('deviceorientation', (e) => {
                             // do something with e
                             console.log('adding xr camera', e)
@@ -257,8 +257,8 @@ function buildWorld(){
                             debug('XR camera')
                         })
                     }
-                })
-                .catch(console.error)
+                // })
+                // .catch(console.error)
             } else {
                 console.log('not ios')
                 scene.activeCamera.detachControl(canvas);
@@ -331,7 +331,6 @@ function buildWorld(){
         type: 'custom',
         renderingMode: '3d',
         onAdd: function(map) {
-            console.log('on add')
             this.map = map;
             this.engine = createEngine();
             this.scene = createScene()
