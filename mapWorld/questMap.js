@@ -257,6 +257,10 @@ function buildWorld(){
 
                         let beta = e.beta
                         let gamma = e.gamma
+                        userFacingDirection = e.webkitCompassHeading
+                        console.log('userFacingDirection', userFacingDirection)
+                        console.log('beta', beta)
+
 
                         scene.registerBeforeRender(() => {
                             camera.alpha = BABYLON.Tools.ToRadians(gamma);
