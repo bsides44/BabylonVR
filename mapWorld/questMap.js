@@ -244,6 +244,7 @@ function buildWorld(){
     
     // function renderBabylon(engine, matrix) {
     //     if(scene) {
+    //         console.log('if scene')
     //         var projection = BABYLON.Matrix.FromArray(matrix);
     //         projection._m = matrix; 
     //         engine.wipeCaches(false);
@@ -306,16 +307,14 @@ function buildWorld(){
             console.log('on add')
             this.map = map;
             this.engine = createEngine();
-            this.scene = createScene(this.engine)
+            this.scene = createScene()
         },
         render(gl, matrix) {
-    console.log('render')
-
+            console.log('render')
+            // renderBabylon(engine, matrix)
             if (this.scene) {
-    console.log('if scene')
-
-                // renderBabylon(engine, matrix)
-                scene.render()
+            console.log('if scene')
+                scene.render(false)
             }
             this.map.triggerRepaint();
         }
