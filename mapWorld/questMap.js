@@ -14,7 +14,7 @@
 // add trees and bird sounds
 // add entrance screen
 // add multiplayer
-console.log('loading')
+
 let userLocation = [174.85546448262812, -41.07448707375911] 
 let userFacingDirection = 135
 let camera
@@ -24,7 +24,6 @@ let canvas
  /** GPS **/
 
  const gpsSuccess = (position) => {
-    console.log('gps success')
     userLocation = [position.coords.longitude, position.coords.latitude] 
     userFacingDirection = position.coords.heading ? position.coords.heading : -90
     buildWorld()
@@ -39,19 +38,16 @@ let canvas
   };
 
 function buildWorld(){
-    console.log('build world')
     /** BABYLON SETUP **/
     let scene
     
     function createEngine() {
-        console.log('create engine')
         canvas = document.getElementById("renderCanvas"); // Canvas element required for navigation
         engine = new BABYLON.Engine(canvas, true);
         return 
     }
     
     function createScene() {
-        console.log('create scene')
         scene = new BABYLON.Scene(engine);
         scene.activeCamera = new BABYLON.Camera("mapbox-Camera", new BABYLON.Vector3(), scene);
         scene.autoClear = false;
@@ -161,35 +157,9 @@ function buildWorld(){
 
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
 
+            getOrientation()
         //Check this event exists (ios only)
-    if (confirm('Device location required'))
-        {
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-            DeviceOrientationEvent.requestPermission()
-            .then(response => {
-                if (response == 'granted') {
-                    window.addEventListener('deviceorientation', (e) => {
-                        // do something with e
-                        console.log('adding xr camera', e)
-                        scene.activeCamera.detachControl(canvas);
-                        const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-                        scene.activeCamera = deviceCamera;
-                        deviceCamera.attachControl(canvas, false);
-                        debug('XR camera')
-                    })
-                }
-            })
-            .catch(console.error)
-        } else {
-            console.log('not ios')
-            scene.activeCamera.detachControl(canvas);
-            const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-            scene.activeCamera = deviceCamera;
-            deviceCamera.attachControl(canvas, false);
-        }
-    } else {
-        console.log('device orientation denied')
-    }
+  
 
             // }
             
@@ -266,6 +236,40 @@ function buildWorld(){
 
         return scene;	
     }
+
+    function getOrientation(){
+        console.log('getting orientaiton')
+        if (confirm('Device location required')) {
+            // ios 13+
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                console.log('ios 13+')
+                DeviceOrientationEvent.requestPermission()
+                .then(response => {
+                    console.log('DeviceOrientationEvent permission', response)
+                    if (response == 'granted') {
+                        window.addEventListener('deviceorientation', (e) => {
+                            // do something with e
+                            console.log('adding xr camera', e)
+                            scene.activeCamera.detachControl(canvas);
+                            const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                            scene.activeCamera = deviceCamera;
+                            deviceCamera.attachControl(canvas, false);
+                            debug('XR camera')
+                        })
+                    }
+                })
+                .catch(console.error)
+            } else {
+                console.log('not ios')
+                scene.activeCamera.detachControl(canvas);
+                const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                scene.activeCamera = deviceCamera;
+                deviceCamera.attachControl(canvas, false);
+            }
+        } else {
+            console.log('device orientation denied')
+        }
+    }
     
     // function renderBabylon(engine, matrix) {
     //     if(scene) {
@@ -294,7 +298,6 @@ function buildWorld(){
     //     var worldMatrix = scaleMatrix.multiply(rotationMatrix.multiply(translateMatrix));
     //     return worldMatrix;
     // }
-    console.log('map')
     console.log('userFacingDirection', userFacingDirection)
     console.log('userLocation', userLocation)
 
@@ -323,7 +326,6 @@ function buildWorld(){
 
         
     // /** 3D OBJECT LAYER **/
-    console.log('cutsom layer')
     var customLayer = {
         id: '3d-model',
         type: 'custom',
@@ -335,10 +337,8 @@ function buildWorld(){
             this.scene = createScene()
         },
         render() {
-            console.log('render')
             // renderBabylon(engine, matrix)
             if (this.scene) {
-            console.log('if scene')
                 this.scene.render()
             }
             this.map.triggerRepaint();
@@ -346,7 +346,6 @@ function buildWorld(){
     }
 
     map.on('style.load', () => {
-        console.log('map add layer')
         map.addLayer(customLayer);
     });
 
@@ -367,7 +366,6 @@ else
 
 /** DEBUG QUEST BROWSESR */
 function debug(words){
-    console.log('debug')
     var paragraph = document.getElementById('printDebug')
     var text = document.createTextNode(words);
     paragraph.appendChild(text)
