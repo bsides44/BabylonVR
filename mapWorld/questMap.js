@@ -162,9 +162,10 @@ function buildWorld(){
 
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
 
-            
-            motionButton.style.display = "block"
-
+            // only required for ios 13+
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                motionButton.style.display = "block"
+            }
         /**  AR */
         // const arAvailable = await BABYLON.WebXRSessionManager.IsSessionSupportedAsync('immersive-ar');
 
@@ -249,13 +250,20 @@ function buildWorld(){
                 if (response == 'granted') {
                     window.addEventListener('deviceorientation', (e) => {
                         // do something with e
-                        scene.activeCamera.detachControl(canvas);
-                        const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-                        scene.activeCamera = deviceCamera;
-                        deviceCamera.attachControl(canvas, false);
+                        // scene.activeCamera.detachControl(canvas);
+                        // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                        // scene.activeCamera = deviceCamera;
+                        // deviceCamera.attachControl(canvas, false);
 
-//                         e:
-//                         alpha: 2.200926027684485
+                        let beta = e.beta
+                        let gamma = e.gamma
+
+                        scene.registerBeforeRender(() => {
+                            camera.alpha = BABYLON.Tools.ToRadians(gamma);
+                            camera.beta = BABYLON.Tools.ToRadians(beta);
+                        });
+// e:
+// alpha: 2.200926027684485
 // beta: 46.26685110968732
 // bubbles: false
 // cancelBubble: false
