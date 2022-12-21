@@ -3,7 +3,9 @@
 //TODO 
 // gps denied in quest browser
 // option to replace mapbox with terrain built on elevation data from getElevation function
-// get facing direction from phone (assume we already have it until we can test in prod)
+
+// location polling (watchLocation) breaks on mobile, forces constant reload
+
 // get camera to move with VR headset
 // get left controller to rotate camera
 // access full screen in wolvic?
@@ -160,12 +162,12 @@ function buildWorld(){
             //     // const xrCamera = new BABYLON.WebXRCamera("xrCamera", scene, sessionManager);
 
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
-
-            //     scene.activeCamera.detachControl(canvas);
-            //     const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-            //     scene.activeCamera = deviceCamera;
-            //     deviceCamera.attachControl(canvas, false);
-            //     debug('XR camera')
+                console.log('adding xr camera')
+                scene.activeCamera.detachControl(canvas);
+                const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                scene.activeCamera = deviceCamera;
+                deviceCamera.attachControl(canvas, false);
+                debug('XR camera')
             // }
             
         // }
@@ -309,7 +311,7 @@ function buildWorld(){
             this.engine = createEngine();
             this.scene = createScene()
         },
-        render(gl, matrix) {
+        render() {
             console.log('render')
             // renderBabylon(engine, matrix)
             if (this.scene) {
@@ -332,7 +334,7 @@ function buildWorld(){
 /** CALL GPS */
 if (confirm('Device location required'))
 {
-    navigator.geolocation.watchPosition(gpsSuccess, gpsError);
+    navigator.geolocation.getCurrentPosition(gpsSuccess, gpsError);
 }
 else
 {
