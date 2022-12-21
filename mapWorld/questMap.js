@@ -314,7 +314,7 @@ function buildWorld(){
             // renderBabylon(engine, matrix)
             if (this.scene) {
             console.log('if scene')
-                scene.render(false)
+                this.scene.render()
             }
             this.map.triggerRepaint();
         }
