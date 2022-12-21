@@ -14,6 +14,8 @@
 // add trees and bird sounds
 // add entrance screen
 // add multiplayer
+const locationButton = document.getElementById( "locationButton" );
+locationButton.addEventListener( "click", getLocation );
 
 let userLocation = [174.85546448262812, -41.07448707375911] 
 let userFacingDirection = 135
@@ -38,7 +40,6 @@ let canvas
   };
 
 function buildWorld(){
-
     const motionButton = document.getElementById( "motionButton" );
     motionButton.addEventListener( "click", getMotion );
 
@@ -248,12 +249,30 @@ function buildWorld(){
                 if (response == 'granted') {
                     window.addEventListener('deviceorientation', (e) => {
                         // do something with e
-                        console.log('adding xr camera', e)
                         scene.activeCamera.detachControl(canvas);
                         const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
                         scene.activeCamera = deviceCamera;
                         deviceCamera.attachControl(canvas, false);
-                        debug('XR camera')
+
+//                         e:
+//                         alpha: 2.200926027684485
+// beta: 46.26685110968732
+// bubbles: false
+// cancelBubble: false
+// cancelable: false
+// composed: false
+// currentTarget: null
+// defaultPrevented: false
+// eventPhase: 0
+// gamma: -4.974145704932919
+// isTrusted: true
+// returnValue: true
+// srcElement: Window {listeners: Object, buildWorld: function, Infinity: Infinity, document: #document, debug: function, …}
+// target: Window {listeners: Object, buildWorld: function, Infinity: Infinity, document: #document, debug: function, …}
+// timeStamp: 12847
+// type: "deviceorientation"
+// webkitCompassAccuracy: 12.370033264160156
+// webkitCompassHeading: 256.5682373046875
                     })
                 }
             })
@@ -264,7 +283,6 @@ function buildWorld(){
             const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
             scene.activeCamera = deviceCamera;
             deviceCamera.attachControl(canvas, false);
-            debug('XR camera')
         }
     }
     
@@ -350,13 +368,9 @@ function buildWorld(){
 };
 
 /** CALL GPS */
-if (confirm('Device location required'))
-{
+function getLocation(){
+    locationButton.style.display = "none"
     navigator.geolocation.getCurrentPosition(gpsSuccess, gpsError);
-}
-else
-{
-    gpsError({message:'Location not allowed'})
 }
 
 
