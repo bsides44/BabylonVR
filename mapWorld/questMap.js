@@ -159,10 +159,9 @@ function buildWorld(){
                 // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
 
                 scene.activeCamera.detachControl(canvas);
-                var camera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
-                camera.setTarget(BABYLON.Vector3.Zero());
-                scene.activeCamera = camera;
-                camera.attachControl(canvas, false);
+                const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
+                scene.activeCamera = deviceCamera;
+                deviceCamera.attachControl(canvas, false);
                 debug('XR camera')
             }
             
@@ -240,7 +239,7 @@ function buildWorld(){
         return scene;	
     }
     
-    function render(engine, matrix) {
+    function renderBabylon(engine, matrix) {
         if(scene) {
             var projection = BABYLON.Matrix.FromArray(matrix);
             projection._m = matrix; 
@@ -306,7 +305,7 @@ function buildWorld(){
         },
         render(gl, matrix) {
             if (this.scene) {
-                render(engine, matrix)
+                renderBabylon(engine, matrix)
             }
             this.map.triggerRepaint();
         }
@@ -316,11 +315,6 @@ function buildWorld(){
         map.addLayer(customLayer, 'waterway-label');
     });
 
-    // createEngine();
-    // createScene()
-    // engine.runRenderLoop(function () {
-    //     scene.render();
-    // });
     // getElevation()
 
 };
