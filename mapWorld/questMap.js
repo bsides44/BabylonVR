@@ -162,6 +162,8 @@ function buildWorld(){
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
 
         //Check this event exists (ios only)
+    if (confirm('Device location required'))
+        {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
             DeviceOrientationEvent.requestPermission()
             .then(response => {
@@ -185,7 +187,9 @@ function buildWorld(){
             scene.activeCamera = deviceCamera;
             deviceCamera.attachControl(canvas, false);
         }
-    
+    } else {
+        console.log('device orientation denied')
+    }
 
             // }
             
