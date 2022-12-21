@@ -305,7 +305,8 @@ function buildWorld(){
         },
         render(gl, matrix) {
             if (this.scene) {
-                renderBabylon(engine, matrix)
+                // renderBabylon(engine, matrix)
+                scene.render()
             }
             this.map.triggerRepaint();
         }
