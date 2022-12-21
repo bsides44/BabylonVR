@@ -3,16 +3,14 @@
 //TODO 
 // gps denied in quest browser
 // option to replace mapbox with terrain built on elevation data from getElevation function
-
 // location polling (watchLocation) breaks on mobile, forces constant reload
+
+// Add gesture to get device orientation working
+// error is: Requesting device orientation access requires a user gesture to prompt
 
 // get camera to move with VR headset
 // get left controller to rotate camera
 // access full screen in wolvic?
-
-// walk and look camera https://playground.babylonjs.com/#CTCSWQ#945
-
-// ar not supported on mobile browsers?
 // add trees and bird sounds
 // add entrance screen
 // add multiplayer
@@ -162,12 +160,21 @@ function buildWorld(){
             //     // const xrCamera = new BABYLON.WebXRCamera("xrCamera", scene, sessionManager);
 
             //     // xrCamera.setTransformationFromNonVRCamera("mapbox-Camera", true);
+            if (confirm('Device orientation required'))
+            {
                 console.log('adding xr camera')
                 scene.activeCamera.detachControl(canvas);
                 const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
                 scene.activeCamera = deviceCamera;
                 deviceCamera.attachControl(canvas, false);
                 debug('XR camera')
+            }
+            else
+            {
+                console.log('device orientation not allowed')
+            }
+    
+
             // }
             
         // }
