@@ -4,9 +4,12 @@
 // gps denied in quest browser
 // option to replace mapbox with terrain built on elevation data from getElevation function
 
-// it's possible that camera won't work becuase im trying to adjust babylon camera controls
-// perhaps it is mapbox's camera and controls that are in use
-// investigate how to change mapbox camera control inputs
+// babylon device camera won't work becuase
+// it is mapbox's camera and controls that are in use
+// mapbox tracks location and heading - now rotate the map to the heading
+// https://docs.mapbox.com/android/legacy/maps/examples/rotate-extrustions/
+// https://docs.mapbox.com/mapbox-gl-js/api/properties/#freecameraoptions
+
 
 // get camera to move with VR headset
 // get left controller to rotate camera
@@ -58,7 +61,7 @@ function getLocation(){
             console.log('iOS DeviceOrientationEvent permission', response)
             if (response == 'granted') {
                 window.addEventListener('deviceorientation', (e) => {
-                    userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : 230
+                    userFacingDirection = e.webkitCompassHeading
                     // 1. try device orientation camera
                     // scene.activeCamera.detachControl(canvas);
                     // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
@@ -66,8 +69,8 @@ function getLocation(){
                     // deviceCamera.attachControl(canvas, false);
                     
                     //2. try bind camera to beta and game values with registerbeforerender
-                    beta = e.beta
-                    gamma = e.gamma
+                    // beta = e.beta
+                    // gamma = e.gamma
 
                     //3. try add vr device orientation controls
                     if (!sentOnce) {
@@ -83,9 +86,7 @@ function getLocation(){
         console.log('not ios')
         // add 'if (mobile) {
         window.addEventListener('deviceorientation', (e) => {
-            userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
-            beta = e.beta
-            gamma = e.gamma
+            userFacingDirection = e.webkitCompassHeading
 
             if (!sentOnce) {
                 sentOnce = !sentOnce
@@ -112,9 +113,9 @@ function buildWorld(){
         scene = new BABYLON.Scene(engine);
         scene.activeCamera = new BABYLON.FreeCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
         camera = scene.activeCamera; 
-        camera.inputs.addDeviceOrientation(0.5);
-        // scene.autoClear = false;
-        // scene.detachControl();
+        // camera.inputs.addDeviceOrientation(0.5);
+        scene.autoClear = false;
+        scene.detachControl();
 
                
         // camera.attachControl(canvas, true);
@@ -309,10 +310,10 @@ function buildWorld(){
         //     });
         // }
 
-        scene.registerBeforeRender(() => {
-            camera.alpha = BABYLON.Tools.ToRadians(gamma);
-            camera.beta = BABYLON.Tools.ToRadians(beta);
-        });
+        // scene.registerBeforeRender(() => {
+        //     camera.alpha = BABYLON.Tools.ToRadians(gamma);
+        //     camera.beta = BABYLON.Tools.ToRadians(beta);
+        // });
 
         return scene;	
     }
@@ -380,6 +381,13 @@ function buildWorld(){
         },
         render() {
             if (this.scene) {
+                let count = 0
+                if (count == 100) {
+                    console.log('userFacingDirection', userFacingDirection)
+                    count = 0
+                }
+                count++
+                map.rotateTo(userFacingDirection)
                 this.scene.render()
                 // engine.runRenderLoop(function () {
                 //     scene.render();
