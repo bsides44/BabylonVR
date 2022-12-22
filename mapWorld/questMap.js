@@ -3,10 +3,10 @@
 //TODO 
 // gps denied in quest browser
 // option to replace mapbox with terrain built on elevation data from getElevation function
-// location polling (watchLocation) breaks on mobile, forces constant reload
 
-// Add gesture to get device orientation working
-// error is: Requesting device orientation access requires a user gesture to prompt
+// it's possible that camera won't work becuase im trying to adjust babylon camera controls
+// perhaps it is mapbox's camera and controls that are in use
+// investigate how to change mapbox camera control inputs
 
 // get camera to move with VR headset
 // get left controller to rotate camera
@@ -393,6 +393,14 @@ function buildWorld(){
     map.on('style.load', () => {
         map.addLayer(customLayer);
     });
+
+    map.addControl(new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserHeading: true
+    }));
 
     // getElevation()
 
