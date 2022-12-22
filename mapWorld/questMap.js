@@ -37,7 +37,6 @@ function getLocation(){
  const gpsSuccess = (position) => {
     userLocation = [position.coords.longitude, position.coords.latitude] 
     userFacingDirection = position.coords.heading ? position.coords.heading : -90
-    buildWorld()
  }
 
  const gpsError = (error) => {
@@ -45,7 +44,6 @@ function getLocation(){
     alert('Please turn on Location Services')
     debug('GPS error: ');
     debug(error.message);
-    buildWorld()
   };
 
   /** MOTION */
@@ -73,8 +71,10 @@ function getLocation(){
                     // gamma = e.gamma
 
                     //3. try add vr device orientation controls
-                    
+                    console.log('e.webkitCompassHeading', e.webkitCompassHeading)
+                    console.log('OR facing direction', userFacingDirection)
                 })
+                buildWorld()
             }
         })
         .catch(console.error)
@@ -83,11 +83,12 @@ function getLocation(){
         window.addEventListener('deviceorientation', (e) => {
             userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : userFacingDirection
         })
+        buildWorld()
     }
 }
 
 function buildWorld(){
-    console.log('user facing direction', userFacingDirection)
+    console.log('BW facing direction', userFacingDirection)
     /** BABYLON SETUP **/
     let scene
     
