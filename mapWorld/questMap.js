@@ -51,6 +51,7 @@ function getLocation(){
   function getMotion(){
     console.log('getting orientaiton')
     motionButton.style.display = "none"
+    let sentOnce = false
     // ios 13+
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
         console.log('ios 13+')
@@ -59,7 +60,7 @@ function getLocation(){
             console.log('DeviceOrientationEvent permission', response)
             if (response == 'granted') {
                 window.addEventListener('deviceorientation', (e) => {
-                    userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : 0
+                    userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : 230
                     // 1. try device orientation camera
                     // scene.activeCamera.detachControl(canvas);
                     // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
@@ -71,7 +72,10 @@ function getLocation(){
                     // gamma = e.gamma
 
                     //3. try add vr device orientation controls
-                    buildWorld()
+                    if (!sentOnce) {
+                        sentOnce = !sentOnce
+                        buildWorld()
+                    }
                 })
 
             }
@@ -81,7 +85,7 @@ function getLocation(){
     } else {
         console.log('not ios')
         window.addEventListener('deviceorientation', (e) => {
-            userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : 0
+            userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
             buildWorld()
         })
         // buildWorld()
