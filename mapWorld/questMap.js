@@ -78,15 +78,16 @@ function getLocation(){
                     }
                 })
 
-            }
+            } else buildWorld()
         })
-        // .then(() => buildWorld())
         .catch(console.error)
     } else {
         console.log('not ios')
         // add 'if (mobile) {
         // window.addEventListener('deviceorientation', (e) => {
         //     userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
+        //     beta = e.beta
+        //     gamma = e.gamma
         //     if (!sentOnce) {
         //         sentOnce = !sentOnce
         //         buildWorld()
@@ -114,22 +115,20 @@ function buildWorld(){
         // scene.autoClear = false;
         // scene.detachControl();
 
-        camera = scene.activeCamera;
+        camera = scene.activeCamera;        
         // camera.attachControl(canvas, true);
-ß
+
         // camera.inputs.clear();
         camera.inputs.add(new BABYLON.FreeCameraDeviceOrientationInput());
         // camera.inputs.addVRDeviceOrientation()
-
         // camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
         // camera.setTarget(new BABYLON.Vector3(0, 0, -10));
         // camera.angularSensibility = 10;
         // camera.moveSensibility = 10;
 
         camera.attachControl(canvas, true);
-
         const light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(1, 1, 0), scene)
-    
+
         const ground = BABYLON.Mesh.CreateGround('', 10, 10, 3, scene)
         ground.position.y = -3
         ground.material = new BABYLON.StandardMaterial('', scene)
@@ -310,6 +309,7 @@ function buildWorld(){
         // }
 
         scene.registerBeforeRender(() => {
+            console.log('register:')
             camera.alpha = BABYLON.Tools.ToRadians(gamma);
             camera.beta = BABYLON.Tools.ToRadians(beta);
         });
@@ -381,9 +381,16 @@ function buildWorld(){
         },
         render() {
             // renderBabylon(engine, matrix)
+            // console.log('render:')
             if (this.scene) {
-                this.scene.render()
+                // this.scene.render()
+                engine.runRenderLoop(function () {
+                    console.log('runRenderLoop:')
+                    console.log('beta: ', beta, ' gamma: ', gamma)
+                    scene.render();
+                });
             }
+
             this.map.triggerRepaint();
         }
     }
