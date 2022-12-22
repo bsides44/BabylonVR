@@ -31,7 +31,6 @@ let canvas
 function getLocation(){
     locationButton.style.display = "none"
     navigator.geolocation.getCurrentPosition(gpsSuccess, gpsError);
-
     motionButton.style.display = "block"
 }
 
@@ -61,8 +60,8 @@ function getLocation(){
         .then(response => {
             console.log('DeviceOrientationEvent permission', response)
             if (response == 'granted') {
-                console.log('moved buildworld')
                 window.addEventListener('deviceorientation', (e) => {
+                    userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : userFacingDirection
                     // 1. try device orientation camera
                     // scene.activeCamera.detachControl(canvas);
                     // const deviceCamera = new BABYLON.DeviceOrientationCamera("DeviceCamera", new BABYLON.Vector3(0, 15, -45), scene);
@@ -82,12 +81,13 @@ function getLocation(){
     } else {
         console.log('not ios')
         window.addEventListener('deviceorientation', (e) => {
+            userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : userFacingDirection
         })
     }
 }
 
 function buildWorld(){
-    console.log('build world')
+    console.log('user facing direction', userFacingDirection)
     /** BABYLON SETUP **/
     let scene
     
@@ -109,15 +109,9 @@ function buildWorld(){
         // camera.inputs.addVRDeviceOrientation()
 
         camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
-
-        // Targets the camera to a particular position
-        camera.setTarget(new BABYLON.Vector3(0, 0, -10));
-
-        // Sets the sensitivity of the camera to movement and rotation
+        // camera.setTarget(new BABYLON.Vector3(0, 0, -10));
         camera.angularSensibility = 10;
         camera.moveSensibility = 10;
-
-        // Attach the camera to the canvas
         camera.attachControl(canvas, true);
 
         const light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(1, 1, 0), scene)
