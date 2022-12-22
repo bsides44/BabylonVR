@@ -71,12 +71,11 @@ function getLocation(){
                     // gamma = e.gamma
 
                     //3. try add vr device orientation controls
-                    console.log('e.webkitCompassHeading', e.webkitCompassHeading)
-                    console.log('OR facing direction', userFacingDirection)
                 })
-                buildWorld()
+
             }
         })
+        .then(() => buildWorld())
         .catch(console.error)
     } else {
         console.log('not ios')
@@ -88,7 +87,7 @@ function getLocation(){
 }
 
 function buildWorld(){
-    console.log('BW facing direction', userFacingDirection)
+    console.log('BW2 facing direction', userFacingDirection)
     /** BABYLON SETUP **/
     let scene
     
@@ -100,19 +99,22 @@ function buildWorld(){
     
     function createScene() {
         scene = new BABYLON.Scene(engine);
-        // scene.activeCamera = new BABYLON.ArcRotateCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
+        scene.activeCamera = new BABYLON.FreeCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
         // scene.autoClear = false;
         // scene.detachControl();
 
-        // camera = scene.activeCamera;
+        camera = scene.activeCamera;
         // camera.attachControl(canvas, true);
-        // // camera.inputs.add(new BABYLON.ArcRotateCameraVRDeviceOrientationInput());
+ß
+        camera.inputs.clear();
+        camera.inputs.add(new BABYLON.FreeCameraDeviceOrientationInput());
         // camera.inputs.addVRDeviceOrientation()
 
-        camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
+        // camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
         // camera.setTarget(new BABYLON.Vector3(0, 0, -10));
-        camera.angularSensibility = 10;
-        camera.moveSensibility = 10;
+        // camera.angularSensibility = 10;
+        // camera.moveSensibility = 10;
+
         camera.attachControl(canvas, true);
 
         const light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(1, 1, 0), scene)
@@ -385,4 +387,3 @@ function debug(words){
     var text = document.createTextNode(words);
     paragraph.appendChild(text)
 }
-
