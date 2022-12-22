@@ -24,8 +24,8 @@ let userFacingDirection = 135
 let camera
 let engine
 let canvas
-// let beta = 0
-// let gamma = 0
+let beta = 0
+let gamma = 0
 
 /** CALL GPS */
 function getLocation(){
@@ -68,8 +68,8 @@ function getLocation(){
                     // deviceCamera.attachControl(canvas, false);
                     
                     //2. try bind camera to beta and game values with registerbeforerender
-                    // beta = e.beta
-                    // gamma = e.gamma
+                    beta = e.beta
+                    gamma = e.gamma
 
                     //3. try add vr device orientation controls
                     if (!sentOnce) {
@@ -84,11 +84,16 @@ function getLocation(){
         .catch(console.error)
     } else {
         console.log('not ios')
-        window.addEventListener('deviceorientation', (e) => {
-            userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
-            buildWorld()
-        })
-        // buildWorld()
+        // add 'if (mobile) {
+        // window.addEventListener('deviceorientation', (e) => {
+        //     userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
+        //     if (!sentOnce) {
+        //         sentOnce = !sentOnce
+        //         buildWorld()
+        //     }
+        // })
+        // } else {}
+        buildWorld()
     }
 }
 
@@ -112,7 +117,7 @@ function buildWorld(){
         camera = scene.activeCamera;
         // camera.attachControl(canvas, true);
 ß
-        camera.inputs.clear();
+        // camera.inputs.clear();
         camera.inputs.add(new BABYLON.FreeCameraDeviceOrientationInput());
         // camera.inputs.addVRDeviceOrientation()
 
@@ -303,6 +308,11 @@ function buildWorld(){
         //         camera.beta = BABYLON.Tools.ToRadians(beta);
         //     });
         // }
+
+        scene.registerBeforeRender(() => {
+            camera.alpha = BABYLON.Tools.ToRadians(gamma);
+            camera.beta = BABYLON.Tools.ToRadians(beta);
+        });
 
         return scene;	
     }
