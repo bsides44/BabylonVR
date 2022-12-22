@@ -84,17 +84,17 @@ function getLocation(){
     } else {
         console.log('not ios')
         // add 'if (mobile) {
-        // window.addEventListener('deviceorientation', (e) => {
-        //     userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
-        //     beta = e.beta
-        //     gamma = e.gamma
-        //     if (!sentOnce) {
-        //         sentOnce = !sentOnce
-        //         buildWorld()
-        //     }
-        // })
+        window.addEventListener('deviceorientation', (e) => {
+            userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
+            beta = e.beta
+            gamma = e.gamma
+            if (!sentOnce) {
+                sentOnce = !sentOnce
+                buildWorld()
+            }
+        })
         // } else {}
-        buildWorld()
+        // buildWorld()
     }
 }
 
@@ -111,17 +111,17 @@ function buildWorld(){
     
     function createScene() {
         scene = new BABYLON.Scene(engine);
-        scene.activeCamera = new BABYLON.FreeCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
+        // scene.activeCamera = new BABYLON.FreeCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
         // scene.autoClear = false;
         // scene.detachControl();
 
-        camera = scene.activeCamera;        
+        // camera = scene.activeCamera;        
         // camera.attachControl(canvas, true);
 
         // camera.inputs.clear();
-        camera.inputs.add(new BABYLON.FreeCameraDeviceOrientationInput());
+        // camera.inputs.add(new BABYLON.FreeCameraDeviceOrientationInput());
         // camera.inputs.addVRDeviceOrientation()
-        // camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
+        camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
         // camera.setTarget(new BABYLON.Vector3(0, 0, -10));
         // camera.angularSensibility = 10;
         // camera.moveSensibility = 10;
@@ -309,7 +309,6 @@ function buildWorld(){
         // }
 
         scene.registerBeforeRender(() => {
-            console.log('register:')
             camera.alpha = BABYLON.Tools.ToRadians(gamma);
             camera.beta = BABYLON.Tools.ToRadians(beta);
         });
@@ -380,15 +379,11 @@ function buildWorld(){
             this.scene = createScene()
         },
         render() {
-            // renderBabylon(engine, matrix)
-            // console.log('render:')
             if (this.scene) {
-                // this.scene.render()
-                engine.runRenderLoop(function () {
-                    console.log('runRenderLoop:')
-                    console.log('beta: ', beta, ' gamma: ', gamma)
-                    scene.render();
-                });
+                this.scene.render()
+                // engine.runRenderLoop(function () {
+                //     scene.render();
+                // });
             }
 
             this.map.triggerRepaint();
