@@ -49,15 +49,13 @@ function getLocation(){
   /** MOTION */
 
   function getMotion(){
-    console.log('getting orientaiton')
     motionButton.style.display = "none"
     let sentOnce = false
     // ios 13+
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        console.log('ios 13+')
         DeviceOrientationEvent.requestPermission()
         .then(response => {
-            console.log('DeviceOrientationEvent permission', response)
+            console.log('iOS DeviceOrientationEvent permission', response)
             if (response == 'granted') {
                 window.addEventListener('deviceorientation', (e) => {
                     userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading : 230
@@ -88,13 +86,14 @@ function getLocation(){
             userFacingDirection = e.webkitCompassHeading ? e.webkitCompassHeading :230
             beta = e.beta
             gamma = e.gamma
+
             if (!sentOnce) {
                 sentOnce = !sentOnce
                 buildWorld()
             }
         })
         // } else {}
-        // buildWorld()
+        buildWorld()
     }
 }
 
@@ -111,17 +110,19 @@ function buildWorld(){
     
     function createScene() {
         scene = new BABYLON.Scene(engine);
-        // scene.activeCamera = new BABYLON.FreeCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
+        scene.activeCamera = new BABYLON.FreeCamera("mapbox-Camera", new BABYLON.Vector3(), scene);
+        camera = scene.activeCamera; 
+        camera.inputs.addDeviceOrientation(0.5);
         // scene.autoClear = false;
         // scene.detachControl();
 
-        // camera = scene.activeCamera;        
+               
         // camera.attachControl(canvas, true);
 
         // camera.inputs.clear();
         // camera.inputs.add(new BABYLON.FreeCameraDeviceOrientationInput());
         // camera.inputs.addVRDeviceOrientation()
-        camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
+        // camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
         // camera.setTarget(new BABYLON.Vector3(0, 0, -10));
         // camera.angularSensibility = 10;
         // camera.moveSensibility = 10;
@@ -318,7 +319,6 @@ function buildWorld(){
     
     // function renderBabylon(engine, matrix) {
     //     if(scene) {
-    //         console.log('if scene')
     //         var projection = BABYLON.Matrix.FromArray(matrix);
     //         projection._m = matrix; 
     //         engine.wipeCaches(false);
