@@ -161,9 +161,9 @@ function buildWorld(){
         antialias: true,
     })
 
-    map.on('style.load', () => {
-        map.addLayer(customLayer);
-    });
+    // map.on('style.load', () => {
+    //     map.addLayer(customLayer);
+    // });
 
     map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
