@@ -76,7 +76,6 @@ function  getLocation(){
 }
 
 function buildWorld(){
-    console.log('BW2 facing direction', userFacingDirection)
     /** BABYLON SETUP **/
     let scene
     
