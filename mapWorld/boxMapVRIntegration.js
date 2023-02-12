@@ -1,15 +1,14 @@
-// https://jsfiddle.net/fabsharp/w3dephvm/
-
-//TODO 
-// get mapbox working on browser
-// add terrain layer with trees texture
 
  /** GPS **/
 
- let userLocation = [174.85546448262812, -41.07448707375911] 
- let userFacingDirection = 135
- let camera
- let engine
+let userLocation = [174.85546448262812, -41.07448707375911] 
+let userFacingDirection = 135
+let camera
+let engine
+const locationButton = document.getElementById( "locationButton" );
+locationButton.style.display = "none"
+const motionButton = document.getElementById( "motionButton" );
+motionButton.style.display = "none"
 
  const gpsSuccess = (position) => {
     userLocation = [position.coords.longitude, position.coords.latitude]
@@ -54,62 +53,62 @@ function buildWorld(){
         window.m = ground.material.specularColor = BABYLON.Color3.Black()
         ground.material.diffuseColor = BABYLON.Color3.FromInts(50, 100, 50)
 
-        // camera.applyGravity = true;
-        // scene.collisionsEnabled = true;
-        // camera.checkCollisions = true;
-        // ground.checkCollisions = true;
+        camera.applyGravity = true;
+        scene.collisionsEnabled = true;
+        camera.checkCollisions = true;
+        ground.checkCollisions = true;
 
-        /** DRAW 3D MODEL **/
+         /** DRAW 3D MODEL **/
 
-        // function makeMesh(x, z, mode, parent) {
-        //     var m = BABYLON.Mesh.CreateBox('', 5, scene)
-        //     m.scaling.z = 0.5
-        //     m.position.copyFromFloats(x, 0, z)
-        //     m.billboardMode = mode
-        //     m.material = new BABYLON.StandardMaterial('', scene)
-        //     var c = mode ? 150 : 0
-        //     m.material.diffuseColor = BABYLON.Color3.FromInts(100 + c, 100, 250 - c)
-        //     if (parent) {
-        //       m.parent = parent;
-        //     }
-        //     return m
-        //   }
+        function makeMesh(x, z, mode, parent) {
+            var m = BABYLON.Mesh.CreateBox('', 5, scene)
+            m.scaling.z = 0.5
+            m.position.copyFromFloats(x, 0, z)
+            m.billboardMode = mode
+            m.material = new BABYLON.StandardMaterial('', scene)
+            var c = mode ? 150 : 0
+            m.material.diffuseColor = BABYLON.Color3.FromInts(100 + c, 100, 250 - c)
+            if (parent) {
+              m.parent = parent;
+            }
+            return m
+          }
         
-        //   var m1 = makeMesh(-20, 0, BABYLON.Mesh.BILLBOARDMODE_NONE)
-        //   var m2 = makeMesh(-10, 0, BABYLON.Mesh.BILLBOARDMODE_X)
-        //   var m3 = makeMesh(0, 0, BABYLON.Mesh.BILLBOARDMODE_Y)
-        //   var m4 = makeMesh(10, 0, BABYLON.Mesh.BILLBOARDMODE_Z)
-        //   var m5 = makeMesh(20, 0, BABYLON.Mesh.BILLBOARDMODE_ALL)
+          var m1 = makeMesh(-20, 0, BABYLON.Mesh.BILLBOARDMODE_NONE)
+          var m2 = makeMesh(-10, 0, BABYLON.Mesh.BILLBOARDMODE_X)
+          var m3 = makeMesh(0, 0, BABYLON.Mesh.BILLBOARDMODE_Y)
+          var m4 = makeMesh(10, 0, BABYLON.Mesh.BILLBOARDMODE_Z)
+          var m5 = makeMesh(20, 0, BABYLON.Mesh.BILLBOARDMODE_ALL)
         
-        //   var ref1 = makeMesh(-20, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
-        //   var ref2 = makeMesh(-10, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
-        //   var ref3 = makeMesh(0, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
-        //   var ref4 = makeMesh(10, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
-        //   var ref5 = makeMesh(20, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
+          var ref1 = makeMesh(-20, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
+          var ref2 = makeMesh(-10, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
+          var ref3 = makeMesh(0, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
+          var ref4 = makeMesh(10, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
+          var ref5 = makeMesh(20, 10, BABYLON.Mesh.BILLBOARDMODE_NONE)
         
-        //   var parent = BABYLON.Mesh.CreateBox('parent', 0.5, scene);
-        //   var m6 = makeMesh(-20, 0, BABYLON.Mesh.BILLBOARDMODE_NONE, parent)
-        //   var m7 = makeMesh(-10, 0, BABYLON.Mesh.BILLBOARDMODE_X, parent)
-        //   var m8 = makeMesh(0, 0, BABYLON.Mesh.BILLBOARDMODE_Y, parent)
-        //   var m9 = makeMesh(10, 0, BABYLON.Mesh.BILLBOARDMODE_Z, parent)
-        //   var m10 = makeMesh(20, 0, BABYLON.Mesh.BILLBOARDMODE_ALL, parent)
+          var parent = BABYLON.Mesh.CreateBox('parent', 0.5, scene);
+          var m6 = makeMesh(-20, 0, BABYLON.Mesh.BILLBOARDMODE_NONE, parent)
+          var m7 = makeMesh(-10, 0, BABYLON.Mesh.BILLBOARDMODE_X, parent)
+          var m8 = makeMesh(0, 0, BABYLON.Mesh.BILLBOARDMODE_Y, parent)
+          var m9 = makeMesh(10, 0, BABYLON.Mesh.BILLBOARDMODE_Z, parent)
+          var m10 = makeMesh(20, 0, BABYLON.Mesh.BILLBOARDMODE_ALL, parent)
         
-        //   var a = 0;
+          var a = 0;
           
-        //   scene.registerBeforeRender(function () {
-        //     var diff2 = ref2.position.subtract(camera.position)
-        //     var diff3 = ref3.position.subtract(camera.position)
-        //     var diff4 = ref4.position.subtract(camera.position)
+          scene.registerBeforeRender(function () {
+            var diff2 = ref2.position.subtract(camera.position)
+            var diff3 = ref3.position.subtract(camera.position)
+            var diff4 = ref4.position.subtract(camera.position)
         
-        //     ref2.rotation.x = Math.atan2(-diff2.y, diff2.z)
-        //     ref3.rotation.y = Math.atan2(diff3.x, diff3.z)
-        //     ref4.rotation.z = Math.atan2(diff4.y, diff4.x)
-        //     ref5.rotationQuaternion = BABYLON.Quaternion.FromRotationMatrix(camera.getViewMatrix().clone().invert())
+            ref2.rotation.x = Math.atan2(-diff2.y, diff2.z)
+            ref3.rotation.y = Math.atan2(diff3.x, diff3.z)
+            ref4.rotation.z = Math.atan2(diff4.y, diff4.x)
+            ref5.rotationQuaternion = BABYLON.Quaternion.FromRotationMatrix(camera.getViewMatrix().clone().invert())
         
-        //     parent.position.z = 20 * Math.cos(a);
-        //     a += 0.01;
-        //   })
-
+            parent.position.z = 20 * Math.cos(a);
+            a += 0.01;
+          })
+        
         /**  XR SETUP */
         const vrSupported = await BABYLON.WebXRSessionManager.IsSessionSupportedAsync('immersive-vr');
         
@@ -185,6 +184,20 @@ function buildWorld(){
                       minHeight: "100%",
                       deviceId: ''
                   });
+
+        //  replace bg with existing video/ movie
+        //  dome = new BABYLON.VideoDome(
+        //      "testdome",
+        //      ["./immvid.mp4"],
+        //      {
+        //          resolution: 32,
+        //          clickToPlay: true,
+        //          useDirectMapping: false,
+        //          size: 200,
+        //          halfDomeMode: true
+        //      },
+        //      scene
+        //  );
 
           console.log('AR is running')
       }
